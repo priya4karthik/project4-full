@@ -7,12 +7,13 @@ export default function Chat({ user }) {
   const [chat, setChat] = useState([]);
   const [typing, setTyping] = useState(false);
   const chatEndRef = useRef(null);
+  // Add this at the top
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const fetchHistory = async () => {
   try {
-    const res = await axios.get(
-      `http://127.0.0.1:8000/api/history/?user_id=${user}`
-    );
+   const res = await axios.get(`${API_URL}/api/history/?user_id=${user}`);
+
 
     const formatted = res.data.flatMap(item => [
       { id: item.id, sender: "user", text: item.message },
@@ -49,7 +50,8 @@ useEffect(() => {
 
     setTyping(true);
 
-    const res = await axios.post("http://127.0.0.1:8000/api/chat/", {
+    const res = await axios.post(`${API_URL}/api/chat/`, {
+
       message,
       user_id: user
     });
@@ -69,7 +71,7 @@ const deleteChat = async (id) => {
   }
 
   try {
-    await axios.delete(`http://127.0.0.1:8000/api/delete/${id}/`);
+   await axios.delete(`${API_URL}/api/delete/${id}/`);
     fetchHistory();
   } catch (err) {
     console.log("Delete error:", err);
